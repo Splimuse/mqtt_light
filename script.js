@@ -25,8 +25,7 @@ ws.onclose = () => setStatus('DISCONNECTED');
 
 ws.onmessage = (msg) => {
     let res = msg.data.split(' - ');
-    console.log(res[0]);
-    console.log(res[1]);
+    console.log(`message recv ${res}`);
 
     document.getElementById(res[0]).value = res[1];
     document.getElementById(res[0]).textContent = res[1];
