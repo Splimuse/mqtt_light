@@ -1,6 +1,6 @@
 const button = document.querySelectorAll('button');
 
-const ws = new WebSocket('ws://localhost:3000');
+const ws = new WebSocket('ws://192.168.0.109:3000');
 
 function setStatus(value) {
     console.log(value);

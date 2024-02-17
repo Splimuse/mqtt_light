@@ -1,6 +1,12 @@
 const WebS = require('ws');
 const mqtt = require('mqtt');
+const express = require("express");
+
 const webSocketServer = new WebS.Server({ port: 3000 });
+const app = express();
+app.use(express.static("public"));
+
+
 let arr = [
     '/devices/wb-mdm3_140/controls/K1',
     '/devices/wb-mdm3_140/controls/K2',
@@ -75,3 +81,5 @@ function mqttWrite(topic, value) {
     mqttClient.publish(topic + '/on', String(value));
 
 }
+
+app.listen(8080);
