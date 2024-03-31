@@ -7,6 +7,7 @@ const app = express();
 app.use(express.static("public"));
 
 
+
 let arr = [
     '/devices/wb-mdm3_140/controls/K1',
     '/devices/wb-mdm3_140/controls/K2',
@@ -17,9 +18,9 @@ let arr = [
     '/devices/wb-mr6c_237/controls/K4',
     '/devices/wb-mr6c_237/controls/K5',
     '/devices/wb-mr6c_237/controls/K6',
-    // '/devices/wb-mdm3_140/controls/Channel 1',
-    // '/devices/wb-mdm3_140/controls/Channel 2',
-    // '/devices/wb-mdm3_140/controls/Channel 3',
+    '/devices/wb-mdm3_140/controls/Channel 1',
+    '/devices/wb-mdm3_140/controls/Channel 2',
+    '/devices/wb-mdm3_140/controls/Channel 3',
 ]
 
 let state = new Map([
@@ -32,12 +33,12 @@ let state = new Map([
     ['/devices/wb-mr6c_237/controls/K4', 0],
     ['/devices/wb-mr6c_237/controls/K5', 0],
     ['/devices/wb-mr6c_237/controls/K6', 0],
-    // ['/devices/wb-mdm3_140/controls/Channel 1', 0],
-    // ['/devices/wb-mdm3_140/controls/Channel 2', 0],
-    // ['/devices/wb-mdm3_140/controls/Channel 3', 0],
+    ['/devices/wb-mdm3_140/controls/Channel 1', 1],
+    ['/devices/wb-mdm3_140/controls/Channel 2', 1],
+    ['/devices/wb-mdm3_140/controls/Channel 3', 1],
 ])
 
-const ipAddr = "192.168.0.109"
+const ipAddr = "192.168.0.105"
 
 const mqttClient = mqtt.connect(`mqtt://${ipAddr}:1883`);
 
@@ -70,14 +71,25 @@ webSocketServer.on('connection', webSocketConnection => {
         let value = (Buffer.from(message)).toString();
         let arr = value.split(',');
         arr[1] = JSON.parse(arr[1]);
-        arr[1] = Number(!arr[1]);
+        if (arr[0].indexOf("Channel") != -1) {
+            arr[1] = Number(arr[1])
+        } else {
+            arr[1] = Number(!arr[1]);
+        }
 
+        console.log("bright : " + arr[1]);
         mqttWrite(arr[0], arr[1])
     });
 })
 
 function mqttWrite(topic, value) {
-    console.log(topic + ' and ' + value);
+    // if (topic.indexOf("Channel") != -1) {
+    //     console.log(topic + ' !!!channel!!! ' + value);
+    //     topic = topic + '/on';
+    // } else {
+    //     console.log(topic + ' !!!rele!!! ' + value);
+    //     topic = topic + '/on';
+    // }
     mqttClient.publish(topic + '/on', String(value));
 
 }
